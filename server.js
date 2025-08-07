@@ -1,4 +1,4 @@
-// server.js - 已修复文件名编码问题
+// server.js - 已修复 Pandoc 公式解析问题
 const express = require('express');
 const cors = require('cors');
 const { spawn } = require('child_process');
@@ -19,10 +19,19 @@ app.post('/download-word-pandoc', (req, res) => {
         return res.status(400).send('请求体中缺少sourceText');
     }
 
-    const pandoc = spawn('pandoc', ['-f', 'markdown', '-t', 'docx', '-o', '-']);
+    // 【关键修改】
+    // 在输入格式 'markdown' 后添加扩展，以支持多种数学公式分隔符
+    // +tex_math_single_backslash: 支持 \(...\) 和 \[...\]
+    // +tex_math_dollars: 支持 $...$ 和 $$...$$
+    const pandoc = spawn('pandoc', [
+        '-f',
+        'markdown+tex_math_single_backslash+tex_math_dollars',
+        '-t',
+        'docx',
+        '-o',
+        '-'
+    ]);
     
-    // **已修复的部分**
-    // -------------------------------------------------------------------
     const filename = '原生公式文档.docx';
     
     // 设置响应头
@@ -30,12 +39,10 @@ app.post('/download-word-pandoc', (req, res) => {
         'Content-Type',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     );
-    // 正确地对包含UTF-8字符的文件名进行编码
     res.setHeader(
         'Content-Disposition',
         `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`
     );
-    // -------------------------------------------------------------------
 
     // 将Pandoc的输出流直接管道到响应流
     pandoc.stdout.pipe(res);
