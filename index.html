@@ -98,6 +98,7 @@
             word-wrap: break-word;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         window.MathJax = {
             tex: {
@@ -122,31 +123,126 @@
         <div class="panel">
             <div class="panel-header">原文输入 (Markdown + LaTeX)</div>
             <div id="source-wrapper">
-                <textarea id="source"># 欢迎使用数学公式编辑器
+                <textarea id="source">以下是涵盖数学、物理、化学、统计学、工程等多个领域的核心公式精选（因学体系庞大，无法穷尽所有公式，仅选取最具代表性的基础公式和核心公式）：
 
-在这里输入内容，右侧将实时渲染。
+### 一、数学公式
+数学公式是数学学科中用于表达数量关系、逻辑关系和运算规则的符号组合，涵了代数、几何、微积分、概率论等多个分支。以下为你介绍一些常见且重要的数公式：
 
-## 示例
+#### 1、代数与基础运算
+- 完全平方公式：
+    - \((a + b)^2 = a^2 + 2ab + b^2\)
+    - \((a - b)^2 = a^2 - 2ab + b^2\)
+- 平方差公式：  
+    \((a + b)(a - b) = a^2 - b^2\)
+- 一元二次方程求根公式：  
+    对于方程 \(ax^2 + bx + c = 0\)（\(a \neq 0\)），根为：  
+    \(x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)  
+    其中，判别式 \(\Delta = b^2 - 4ac\)：  
+    - \(\Delta > 0\) 时，有两个不相等的实根；  
+    - \(\Delta = 0\) 时，有两个相等的实根；  
+    - \(\Delta < 0\) 时，无实根（有共轭复根）。
 
-这是一个行内公式: $E=mc^2$。
+#### 2、几何公式
+- 三角形面积：  
+    - 基本公式：\(S = \frac{1}{2} \times 底 \times 高\)  
+    - 海伦公式（已知三边 \(a, b, c\)）：  
+      设半周长 \(p = \frac{a + b + c}{2}\)，则 \(S = \sqrt{p(p - a)(p - b)(p - c)}\)
+- 圆的公式：  
+    - 周长：\(C = 2\pi r\)（\(r\) 为半径）  
+    - 面积：\(S = \pi r^2\)
+- 勾股定理（直角三角形中，直角边 \(a, b\)，斜边 \(c\)）：  
+    \(a^2 + b^2 = c^2\)
 
-下面是一个块级公式 (质能方程):
-$$ E = mc^2 $$
+#### 3、微积分基础
+- 导数定义：  
+    函数 \(f(x)\) 在 \(x_0\) 处的导数：  
+    \(f'(x_0) = \lim_{\Delta x \to 0} \frac{f(x_0 + \Delta x) - f(x_0)}{\Delta x}\)
+- 基本求导公式：  
+    - \((x^n)' = nx^{n-1}\)  
+    - \((\sin x)' = \cos x\)  
+    - \((\cos x)' = -\sin x\)  
+    - \((e^x)' = e^x\)  
+    - \((\ln x)' = \frac{1}{x}\)
+- 定积分（区间 \([a, b]\) 上的积分）：  
+    \(\int_{a}^{b} f(x) dx = F(b) - F(a)\)，其中 \(F(x)\) 是 \(f(x)\) 的原函数（即 \(F'(x) = f(x)\)）
 
-### 更高质量的Word导出
+#### 4、概率论基础
+- 概率的加法公式：  
+    对于两个事件 \(A, B\)：  
+    \(P(A \cup B) = P(A) + P(B) - P(A \cap B)\)  
+    若 \(A, B\) 互斥（\(A \cap B = \emptyset\)），则 \(P(A \cup B) = P(A) + P(B)\)
+- 条件概率公式：  
+    \(P(B|A) = \frac{P(A \cap B)}{P(A)}\)（\(P(A) > 0\)）
 
-当您点击下载时，这些LaTeX代码将被 **Pandoc** 转换为 **Word原生公式**，而不是图片。您可以在Word中双击公式进行编辑。
+#### 5. 线性代数
+- 矩阵乘法：设 \(A = (a_{ij})_{m \times n}\)，\(B = (b_{jk}){n \times p}\)，则 \(AB = (c_{ik})_{m \times p}\)，其中 \(c{ik} = \sum_{j=1}^n a_{ij}b_{jk}\)
+- 行列式（二阶）：\(\begin{vmatrix} a & b \\ c & d \end{vmatrix} = ad - bc\)
+- 特征值与特征向量：若 \(Ax = \lambda x\)（\(x \neq 0\)），则 \(\lambda\) 是矩阵 \(A\) 的特征值，\(x\) 是对应特征向量
 
-**洛必达法则:**
-$$ \lim_{x \to c} \frac{f(x)}{g(x)} = \lim_{x \to c} \frac{f'(x)}{g'(x)} $$
+#### 6. 复变函数
+- 欧拉公式：\(e^{i\theta} = \cos\theta + i\sin\theta\)（\(i\)为虚数单位，\(i^2 = -1\)）
+- 复数模长：对于 \(z = a + bi\)，\(|z| = \sqrt{a^2 + b^2}\)
 
-**正态分布:**
-$$ f(x | \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} $$
+#### 7. 微分方程
+- 一阶线性微分方程通解：\(y' + P(x)y = Q(x)\) 的解为  
+  \(y = e^{-\int P(x)dx} \left( \int Q(x)e^{\int P(x)dx}dx + C \right)\)（\(C\) 为常数）
 
-**麦克斯韦方程组:**
-$$ \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} $$
-$$ \nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} $$
 
+### 二、物理公式
+#### 1. 经典力学
+- 牛顿第二定律：\(F = ma\)（\(F\) 为合力，\(m\) 为质量，\(a\) 为速度）
+- 动量定理：\(\Delta p = F_{\text{合}} \Delta t\)（动量变化等合外力的冲量）
+- 动能定理：\(W_{\text{合}} = \Delta E_k = \frac{1}{2}mv_2^2- \frac{1}{2}mv_1^2\)（合外力做功等于动能变化）
+- 万有引力定律：\(F = G\frac{m_1m_2}{r^2}\)（\(G\) 为引力常量，(r\) 为两物体间距）
+
+#### 2. 电磁学
+- 库仑定律：\(F = k\frac{q_1q_2}{r^2}\)（\(k\) 为静电力常量，(q\) 为电荷量）
+- 欧姆定律：\(I = \frac{U}{R}\)（电流 \(I\)，电压 \(U\)，电阻 (R\)）
+- 焦耳定律：\(Q = I^2Rt\)（电流热效应，\(t\) 为时间）
+- 法拉第电磁感应定律：\(\mathcal{E} = n\left| \frac{\Delta\Phi}{\Delta t} \right|\)（感应电动势，\(n\) 为匝数，\(\Phi\) 磁通量）
+
+#### 3. 热学
+- 理想气体状态方程：\(PV = nRT\)（\(P\) 压强，\(V\) 体积，\(n\)物质的量，\(R\) 气体常量，\(T\) 热力学温度）
+- 热力学第一定律：\(\Delta U = Q + W\)（内能变化 = 吸收的热量 + 界对系统做的功）
+
+#### 4. 光学与近代物理
+- 光速公式：\(c = \lambda \nu\)（\(c\) 真空中光速，\(\lambda\)波长，\(\nu\) 频率）
+- 爱因斯坦质能方程：\(E = mc^2\)（能量 \(E\)，质量 \(m\)）
+- 光电效应方程：\(E_{\text{km}} = h\nu - W_0\)（光电子最大动能 =光子能量 - 逸出功）
+
+
+### 三、化学公式
+#### 1. 基础化学
+- 物质的量公式：\(n = \frac{m}{M} = \frac{N}{N_A}\)（\(m\) 量，\(M\) 摩尔质量，\(N\) 粒子数，\(N_A\) 阿伏伽德罗常数）
+- 溶液浓度：物质的量浓度 \(c = \frac{n}{V}\)（\(V\) 溶液体积）
+
+#### 2. 化学热力学
+- 化学反应速率：\(v = \frac{1}{v_B} \cdot \frac{\Delta c_B}{\Delta t}\)（\(v_B\) 化学计量数，\(c_B\) 物质浓度）
+- 化学平衡常数（溶液反应）：对于反应 \(aA + bB\rightleftharpoons cC + dD\)，  
+  \(K_c = \frac{[C]^c[D]^d}{[A]^a[B]^b}\)（\([\cdot]\) 为平衡浓度）
+
+#### 3. 酸碱与氧化还原
+- 水的离子积：\(K_w = [H^+][OH^-] = 10^{-14}\)（25℃时）
+- 电极电势与吉布斯自由能：\(\Delta G = -nFE_{\text{池}}\)（(n\) 电子转移数，\(F\) 法拉第常数，\(E_{\text{池}}\) 电池电动势）
+
+#### 4. 有机化学（典型反应式）
+- 甲烷燃烧：\(\text{CH}_4 + 2\text{O}_2 \xrightarrow{\text{燃}} \text{CO}_2 + 2\text{H}_2\text{O}\)
+- 乙烯加成：\(\text{CH}_2=\text{CH}_2 + \text{Br}_2\rightarrow \text{CH}_2\text{BrCH}_2\text{Br}\)
+
+
+### 四、统计学与概率论（续）
+- 正态分布概率密度函数：\(f(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x - \mu)^2}{2\sigma^2}}\)（\(\mu\) 均值，\(\sigma\)标准差）
+- 样本均值：\(\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i\)
+- 方差：\(\sigma^2 = \frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2\)（总体方差）；样本方差 \(s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i- \bar{x})^2\)
+
+
+### 五、工程与应用科学
+- 胡克定律（弹性力学）：\(F = kx\)（弹簧弹力，\(k\) 劲度系数，(x\) 形变量）
+- 傅里叶变换（信号处理）：\(F(\omega) = \int_{-\infty}^{\infty}f(t)e^{-i\omega t}dt\)
+- 香浓定理（信息论）：\(C = B\log_2(1 + \frac{S}{N})\)（信道容量\(C\)，带宽 \(B\)，信噪比 \(\frac{S}{N}\)）
+
+
+以上公式覆盖了基础学科的核心内容，若需要某一细分领域（如量子力学、流体学、高分子化学等）的深度公式，可以进一步说明具体方向，以便补充更专业的容。
 </textarea>
             </div>
         </div>
@@ -163,22 +259,46 @@ $$ \nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} $$
 
         // 更新预览区域并触发MathJax渲染
         const updatePreview = async () => {
-            // 使用更可靠的库来将Markdown转为HTML，这里用一个简单的实现
-            let html = sourceTextarea.value
-                .replace(/</g, "&lt;").replace(/>/g, "&gt;") // Escape HTML tags
-                .replace(/^# (.*$)/g, '<h1>$1</h1>') // H1
-                .replace(/^## (.*$)/g, '<h2>$1</h2>') // H2
-                .replace(/^### (.*$)/g, '<h3>$1</h3>') // H3
-                .replace(/\*\*(.*)\*\*/g, '<b>$1</b>') // Bold
-                .replace(/\n/g, '<br>'); // Newlines
-            
+            const sourceText = sourceTextarea.value;
+            const mathBlocks = [];
+
+            // 正则表达式，用于捕获所有类型的MathJax定界符
+            // 捕获顺序很重要，优先捕获更长的/更明确的定界符
+            // 捕获: \(...\), \[...\], $$...$$, 和 $...$
+            const mathRegex = /(\\\([\s\S]*?\\\))|(\\\[[\s\S]*?\\\])|(\$\$[\s\S]*?\$\$)|(\$([^\$\n\r]+?)\$)/g;
+
+            // 1. 【隔离】找到所有数学公式，用占位符替换它们
+            // 这个过程可以保护公式内部的特殊字符（如 _, *, \\）不被 marked.js 错误解析
+            const protectedMarkdown = sourceText.replace(mathRegex, (match) => {
+                const placeholder = `<!--MATH_PLACEHOLDER_${mathBlocks.length}-->`;
+                mathBlocks.push(match); // 将原始公式（如 "\(a_{ij}\)"）存入数组
+                return placeholder;     // 在原文中用占位符替换公式
+            });
+
+            // 2. 【解析】使用 Marked.js 解析被保护后的 Markdown 文本
+            // 因为所有公式都变成了HTML注释，Marked.js 会安全地忽略它们
+            let html = marked.parse(protectedMarkdown);
+
+            // 3. 【还原】将 HTML 中的占位符替换回原始的数学公式字符串
+            // 使用正则表达式找到所有占位符并用数组中的公式进行替换
+            if (mathBlocks.length > 0) {
+                 html = html.replace(/<!--MATH_PLACEHOLDER_(\d+)-->/g, (match, index) => {
+                    return mathBlocks[parseInt(index, 10)];
+                });
+            }
+
+            // 将最终生成的、包含正确公式的 HTML 放入预览区域
             previewDiv.innerHTML = html;
 
+            // 4. 【渲染】最后，让 MathJax 渲染新生成的 HTML 中的数学公式
             if (window.MathJax && window.MathJax.typesetPromise) {
                 try {
-                    await window.MathJax.typesetPromise([previewDiv]);
+                    // 清除之前的渲染结果并重新排版
+                    window.MathJax.startup.promise = window.MathJax.startup.promise
+                        .then(() => window.MathJax.typesetPromise([previewDiv]))
+                        .catch((err) => console.log('MathJax render error:', err));
                 } catch (err) {
-                    console.error('MathJax render error:', err);
+                    console.log('MathJax render error:', err);
                 }
             }
         };
@@ -186,12 +306,11 @@ $$ \nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} $$
         sourceTextarea.addEventListener('input', updatePreview);
         document.addEventListener('DOMContentLoaded', updatePreview);
         
-        // 下载按钮的点击事件 - 已更新
+        // 下载按钮的点击事件 - 无需改动
         downloadBtn.addEventListener('click', async () => {
             downloadBtn.textContent = '正在生成...';
             downloadBtn.disabled = true;
 
-            // **关键改变**: 发送原始文本，而不是渲染后的HTML
             const sourceText = sourceTextarea.value;
 
             try {
@@ -200,7 +319,6 @@ $$ \nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} $$
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    // 将原始文本发送到后端
                     body: JSON.stringify({ sourceText: sourceText })
                 });
 
