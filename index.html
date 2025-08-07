@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学公式编辑器 (原生Word导出版)</title>
+    <style>
+        :root {
+            --border-color: #d1d5db;
+            --background-color: #f9fafb;
+            --button-bg: #2563eb;
+            --button-hover-bg: #1d4ed8;
+        }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--background-color);
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #111827;
+        }
+        #download-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: var(--button-bg);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #download-btn:hover:not(:disabled) {
+            background-color: var(--button-hover-bg);
+        }
+        #download-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        #app-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+        }
+        .panel {
+            flex: 1;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-header {
+            padding: 10px 15px;
+            background-color: #f3f4f6;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: #374151;
+        }
+        #source-wrapper, #preview {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        #source {
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+            outline: none;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: transparent;
+        }
+        #preview {
+            font-size: 16px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+    </style>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>数学公式编辑器 (原生Word导出版)</h1>
+        <button id="download-btn">下载为Word文档</button>
+    </header>
+
+    <div id="app-container">
+        <div class="panel">
+            <div class="panel-header">原文输入 (Markdown + LaTeX)</div>
+            <div id="source-wrapper">
+                <textarea id="source"># 欢迎使用数学公式编辑器
+
+在这里输入内容，右侧将实时渲染。
+
+## 示例
+
+这是一个行内公式: $E=mc^2$。
+
+下面是一个块级公式 (质能方程):
+$$ E = mc^2 $$
+
+### 更高质量的Word导出
+
+当您点击下载时，这些LaTeX代码将被 **Pandoc** 转换为 **Word原生公式**，而不是图片。您可以在Word中双击公式进行编辑。
+
+**洛必达法则:**
+$$ \lim_{x \to c} \frac{f(x)}{g(x)} = \lim_{x \to c} \frac{f'(x)}{g'(x)} $$
+
+**正态分布:**
+$$ f(x | \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} $$
+
+**麦克斯韦方程组:**
+$$ \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} $$
+$$ \nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} $$
+
+</textarea>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header">实时预览</div>
+            <div id="preview"></div>
+        </div>
+    </div>
+
+    <script>
+        const sourceTextarea = document.getElementById('source');
+        const previewDiv = document.getElementById('preview');
+        const downloadBtn = document.getElementById('download-btn');
+
+        // 更新预览区域并触发MathJax渲染
+        const updatePreview = async () => {
+            // 使用更可靠的库来将Markdown转为HTML，这里用一个简单的实现
+            let html = sourceTextarea.value
+                .replace(/</g, "&lt;").replace(/>/g, "&gt;") // Escape HTML tags
+                .replace(/^# (.*$)/g, '<h1>$1</h1>') // H1
+                .replace(/^## (.*$)/g, '<h2>$1</h2>') // H2
+                .replace(/^### (.*$)/g, '<h3>$1</h3>') // H3
+                .replace(/\*\*(.*)\*\*/g, '<b>$1</b>') // Bold
+                .replace(/\n/g, '<br>'); // Newlines
+            
+            previewDiv.innerHTML = html;
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                try {
+                    await window.MathJax.typesetPromise([previewDiv]);
+                } catch (err) {
+                    console.error('MathJax render error:', err);
+                }
+            }
+        };
+
+        sourceTextarea.addEventListener('input', updatePreview);
+        document.addEventListener('DOMContentLoaded', updatePreview);
+        
+        // 下载按钮的点击事件 - 已更新
+        downloadBtn.addEventListener('click', async () => {
+            downloadBtn.textContent = '正在生成...';
+            downloadBtn.disabled = true;
+
+            // **关键改变**: 发送原始文本，而不是渲染后的HTML
+            const sourceText = sourceTextarea.value;
+
+            try {
+                const response = await fetch('http://localhost:3000/download-word-pandoc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    // 将原始文本发送到后端
+                    body: JSON.stringify({ sourceText: sourceText })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`服务器错误: ${response.status} - ${errorText}`);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = '原生公式文档.docx';
+                document.body.appendChild(a);
+                a.click();
+                
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+            } catch (error) {
+                console.error('下载失败:', error);
+                alert('下载失败！\n请确保后端服务器已运行，并且已正确安装Pandoc。\n错误详情请查看浏览器控制台。');
+            } finally {
+                downloadBtn.textContent = '下载为Word文档';
+                downloadBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
