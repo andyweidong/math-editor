@@ -2,6 +2,8 @@
 
 一个基于Web的数学公式编辑器，支持LaTeX语法编写数学公式，并能够将公式导出为Word文档，在Word中保持可编辑的原生公式格式。
 
+体验地址：https://tangerine-cuchufli-179374.netlify.app/
+
 ![效果图](images/112.png)
 
 ## ✨ 功能特性
@@ -116,7 +118,7 @@ A: 请检查端口3000是否被占用，或修改server.js中的端口号。
 
 ## 📄 许可证
 
-ISC License
+MIT License
 
 ## 🤝 贡献
 
