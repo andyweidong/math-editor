@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -242,7 +243,7 @@
 - 香浓定理（信息论）：\(C = B\log_2(1 + \frac{S}{N})\)（信道容量\(C\)，带宽 \(B\)，信噪比 \(\frac{S}{N}\)）
 
 
-以上公式覆盖了基础学科的核心内容，若需要某一细分领域（如量子力学、流体学、高分子化学等）的深度公式，可以进一步说明具体方向，以便补充更专业的容。
+以上公式覆盖了基础学科的核心内容。
 </textarea>
             </div>
         </div>
@@ -257,22 +258,72 @@
         const previewDiv = document.getElementById('preview');
         const downloadBtn = document.getElementById('download-btn');
 
+        /**
+         * 【全新升级】智能预处理器：自动为裸露的、复杂的数学公式块包裹 '$' 定界符
+         * @param {string} text - 原始的Markdown文本
+         * @returns {string} - 经过预处理，包裹好裸露公式的文本
+         */
+         function preprocessAndWrapMath(text) {
+            // 1. 定义保护区：我们不应在这些区域内进行任何自动包裹操作。
+            // 包括：代码块(```, `), 已有的MathJax公式($, $$, \(), \[\]), HTML标签。
+            const protectedBlocksRegex = /(```[\s\S]*?```|`[^`]*?`|\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|<[^>]+>|(?:\$[^\$\n\r]+\$))/g;
+
+            // 2. 分割文本：将文本分为“安全区（可处理）”和“保护区”
+            const parts = text.split(protectedBlocksRegex);
+
+            // 3. 定义一个“数学原子”的构成元素。
+            // 这是一个更强大的正则表达式，能识别构成公式的各种小单元。
+            const mathAtom = [
+                '\\\\(?:[a-zA-Z]+|\\S)', // 匹配LaTeX命令 e.g., \sin, \alpha, \frac, \
+                '[a-zA-Z0-9\\^_]+(?:\\{[^}]*\\})?', // 匹配变量、数字、上下标 e.g., a^2, x_1, \cos^2\alpha
+                '[-+*/=<>|().,]', // 匹配常用操作符和括号
+                '\\{[^}]*\\}' // 匹配独立的 {...} 块
+            ].join('|');
+
+            // 4. 定义一个“公式块”：由一个或多个“数学原子”及其中间的空格组成。
+            const nakedFormulaRegex = new RegExp(`((?:(?:${mathAtom})\\s*)+)`, 'g');
+
+            // 5. 遍历并处理所有“安全区”
+            for (let i = 0; i < parts.length; i += 2) {
+                // parts数组中，偶数索引是“安全区”，奇数索引是“保护区”
+                if (parts[i]) {
+                    // 对安全区应用我们的“公式块”识别引擎
+                    parts[i] = parts[i].replace(nakedFormulaRegex, (match) => {
+                        // 智能判断：只有当匹配到的块包含强数学特征时，才包裹它。
+                        // 这可以防止错误地包裹普通文本，如 "(a > 0, b > 0)"
+                        if (/[\\^_]/.test(match)) {
+                             // 对于复杂的裸露公式，我们默认用行内 $...$ 包裹，
+                             // 这样可以很好地处理 "正弦定理：公式" 这种混合行。
+                            return `$${match.trim()}$`;
+                        }
+                        // 如果不含强特征，则保持原样
+                        return match;
+                    });
+                }
+            }
+            
+            // 6. 合并所有部分，返回最终文本
+            return parts.join('');
+        }
+
         // 更新预览区域并触发MathJax渲染
         const updatePreview = async () => {
-            const sourceText = sourceTextarea.value;
-            const mathBlocks = [];
+            // 阶段一：智能预处理，自动包裹裸露的公式
+            let sourceText = preprocessAndWrapMath(sourceTextarea.value);
 
+            // 阶段二：健壮隔离、解析、还原（代码与之前版本完全相同）
             // 正则表达式，用于捕获所有类型的MathJax定界符
             // 捕获顺序很重要，优先捕获更长的/更明确的定界符
             // 捕获: \(...\), \[...\], $$...$$, 和 $...$
+            const mathBlocks = [];
             const mathRegex = /(\\\([\s\S]*?\\\))|(\\\[[\s\S]*?\\\])|(\$\$[\s\S]*?\$\$)|(\$([^\$\n\r]+?)\$)/g;
 
             // 1. 【隔离】找到所有数学公式，用占位符替换它们
             // 这个过程可以保护公式内部的特殊字符（如 _, *, \\）不被 marked.js 错误解析
             const protectedMarkdown = sourceText.replace(mathRegex, (match) => {
                 const placeholder = `<!--MATH_PLACEHOLDER_${mathBlocks.length}-->`;
-                mathBlocks.push(match); // 将原始公式（如 "\(a_{ij}\)"）存入数组
-                return placeholder;     // 在原文中用占位符替换公式
+                mathBlocks.push(match);
+                return placeholder;
             });
 
             // 2. 【解析】使用 Marked.js 解析被保护后的 Markdown 文本
@@ -293,7 +344,6 @@
             // 4. 【渲染】最后，让 MathJax 渲染新生成的 HTML 中的数学公式
             if (window.MathJax && window.MathJax.typesetPromise) {
                 try {
-                    // 清除之前的渲染结果并重新排版
                     window.MathJax.startup.promise = window.MathJax.startup.promise
                         .then(() => window.MathJax.typesetPromise([previewDiv]))
                         .catch((err) => console.log('MathJax render error:', err));
@@ -314,7 +364,7 @@
             const sourceText = sourceTextarea.value;
 
             try {
-                const response = await fetch('http://localhost:3000/download-word-pandoc', {
+                const response = await fetch('/download-word-pandoc', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
